@@ -1,24 +1,29 @@
 import "@/app/(default)/(ticket)/ticket-result/Filter.scss";
 import { FilterProps } from "@/atoms/atoms";
-import { ChangeEvent, memo, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  memo,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
 const ReturnArrTime = memo(
   ({
     handleFilterChange,
   }: {
-    handleFilterChange: (filter: FilterProps) => void;
+    handleFilterChange: Dispatch<SetStateAction<FilterProps>>;
   }) => {
     const [returnArrTime, setReturnArrTime] = useState<number[]>([
       6, 12, 18, 24,
     ]);
 
-    console.log("오는날 출발시간 필터 렌더링");
-
     /* -------------------------------------------------------------------------- */
     /*                             출도착 시간 변경 처리                               */
     /* -------------------------------------------------------------------------- */
     useEffect(() => {
-      handleFilterChange({ returnArrTime });
+      handleFilterChange((prev) => ({ ...prev, returnArrTime }));
     }, [returnArrTime]);
 
     const handleReturnArrChange = (e: ChangeEvent<HTMLInputElement>) => {

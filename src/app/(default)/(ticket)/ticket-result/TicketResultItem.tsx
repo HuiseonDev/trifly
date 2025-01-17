@@ -14,10 +14,12 @@ const TicketResultItem = ({
   user,
   item,
   airline,
+  isLast,
 }: {
   user: boolean;
   item: OffersSearchData;
   airline: CodeState<AirlineData>;
+  isLast: boolean;
 }) => {
   const { itineraries } = item;
   const searchResult = useRecoilValue(searchResultState);
@@ -285,25 +287,26 @@ const TicketResultItem = ({
   };
 
   return (
-    <li>
-      <button className="ticket-item" onClick={handleClick}>
-        <div className="ticket-itinerary">{routeList}</div>
-        <div className="ticket-pricing">
-          <p className="remaining-seats">{item.numberOfBookableSeats}석 남음</p>
-          <div className="price-per-adults">
-            <p className="price">
-              <span>
-                {Number(
-                  item.travelerPricings[0].price.total.split(".")[0],
-                ).toLocaleString()}
-              </span>
-              원
-            </p>
-            <p className="price-info">유류할증료 및 세금 포함</p>
-          </div>
+    <button
+      className={`ticket-item ${isLast ? "isLast" : ""}`}
+      onClick={handleClick}
+    >
+      <div className="ticket-itinerary">{routeList}</div>
+      <div className="ticket-pricing">
+        <p className="remaining-seats">{item.numberOfBookableSeats}석 남음</p>
+        <div className="price-per-adults">
+          <p className="price">
+            <span>
+              {Number(
+                item.travelerPricings[0].price.total.split(".")[0],
+              ).toLocaleString()}
+            </span>
+            원
+          </p>
+          <p className="price-info">유류할증료 및 세금 포함</p>
         </div>
-      </button>
-    </li>
+      </div>
+    </button>
   );
 };
 

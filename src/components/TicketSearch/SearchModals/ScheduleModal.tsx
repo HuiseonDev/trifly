@@ -1,11 +1,12 @@
+import { modalState } from "@/atoms/atoms";
 import Button from "@/components/Button/Button";
-import { useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import "./ScheduleModal.scss";
 import useCheckWindowWidth from "@/hook/useCheckWindowWidth";
 import Image from "next/image";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Calendar from "react-calendar";
 import { useSetRecoilState } from "recoil";
-import { modalState } from "@/atoms/atoms";
+import ItineraryModal from "./ItineraryModal";
+import "./ScheduleModal.scss";
 
 interface ISchedule {
   departureDate: string;
@@ -16,7 +17,7 @@ interface ISchedule {
 
 interface ScheduleModalProps {
   tripType: string;
-  handleClose: (a: boolean) => void;
+  handleClose: Dispatch<SetStateAction<boolean>>;
   schedule: ISchedule;
   setSchedule: (obj: ISchedule) => void;
 }
@@ -230,101 +231,103 @@ const ScheduleModal = ({
   };
 
   return (
-    <div className="schedule-modal">
-      <button
-        className="close-button img-box"
-        type="button"
-        onClick={() => handleClose(false)}
-      >
-        <Image
-          src="/img/icon-close-black.svg"
-          alt="닫기"
-          width={0}
-          height={0}
-          sizes="100%"
-        />
-        <span className="hidden">닫기</span>
-      </button>
-      <div className="calendars">
-        <div className="calendar">
-          <div className="month-navigation">
-            <button
-              type="button"
-              className="prev-month img-box"
-              onClick={handlePrevClick}
-            >
-              <Image
-                src="/img/icon-arrow.svg"
-                alt="이전"
-                width={0}
-                height={0}
-                sizes="100%"
-              />
-              <span className="hidden">이전 달로</span>
-            </button>
-            <p className="month month-one">
-              {calendarDate.getFullYear()}년 {calendarDate.getMonth() + 1}월
-            </p>
-            {isWeb && (
-              <p className="month month-two">
-                {calendarDate.getMonth() + 2 > 12
-                  ? `${calendarDate.getFullYear() + 1}년 ${calendarDate.getMonth() - 10}월`
-                  : `${calendarDate.getFullYear()}년 ${calendarDate.getMonth() + 2}월`}
-              </p>
-            )}
-            <button
-              type="button"
-              className="next-month img-box"
-              onClick={handleNextClick}
-            >
-              <Image
-                src="/img/icon-arrow.svg"
-                alt="다음"
-                width={0}
-                height={0}
-                sizes="100%"
-              />
-              <span className="hidden">다음 달로</span>
-            </button>
-          </div>
-          <Calendar
-            locale="ko-KR"
-            calendarType="gregory"
-            value={dates}
-            onChange={setDates}
-            selectRange={tripType === "round"}
-            goToRangeStartOnSelect={false}
-            activeStartDate={activeDate}
-            onActiveStartDateChange={handleActiveDateChange}
-            minDate={new Date()}
-            formatDay={(locale, date) =>
-              date.toLocaleString("en", { day: "numeric" })
-            }
-            showNavigation={false}
-            showDoubleView={isWeb}
-            view="month"
-            tileClassName={({ date, view }) => {
-              let className = "";
-              if (view === "month") {
-                if (date.getDay() === 6) {
-                  className += " saturday";
-                }
-                if (date.getDay() === 0) {
-                  className += " sunday";
-                }
-                return className.trim();
-              }
-
-              return null;
-            }}
-            tileContent={tileContent}
+    <ItineraryModal handleClose={handleClose}>
+      <div className="schedule-modal">
+        <button
+          className="close-button img-box"
+          type="button"
+          onClick={() => handleClose(false)}
+        >
+          <Image
+            src="/img/icon-close-black.svg"
+            alt="닫기"
+            width={0}
+            height={0}
+            sizes="100%"
           />
+          <span className="hidden">닫기</span>
+        </button>
+        <div className="calendars">
+          <div className="calendar">
+            <div className="month-navigation">
+              <button
+                type="button"
+                className="prev-month img-box"
+                onClick={handlePrevClick}
+              >
+                <Image
+                  src="/img/icon-arrow.svg"
+                  alt="이전"
+                  width={0}
+                  height={0}
+                  sizes="100%"
+                />
+                <span className="hidden">이전 달로</span>
+              </button>
+              <p className="month month-one">
+                {calendarDate.getFullYear()}년 {calendarDate.getMonth() + 1}월
+              </p>
+              {isWeb && (
+                <p className="month month-two">
+                  {calendarDate.getMonth() + 2 > 12
+                    ? `${calendarDate.getFullYear() + 1}년 ${calendarDate.getMonth() - 10}월`
+                    : `${calendarDate.getFullYear()}년 ${calendarDate.getMonth() + 2}월`}
+                </p>
+              )}
+              <button
+                type="button"
+                className="next-month img-box"
+                onClick={handleNextClick}
+              >
+                <Image
+                  src="/img/icon-arrow.svg"
+                  alt="다음"
+                  width={0}
+                  height={0}
+                  sizes="100%"
+                />
+                <span className="hidden">다음 달로</span>
+              </button>
+            </div>
+            <Calendar
+              locale="ko-KR"
+              calendarType="gregory"
+              value={dates}
+              onChange={setDates}
+              selectRange={tripType === "round"}
+              goToRangeStartOnSelect={false}
+              activeStartDate={activeDate}
+              onActiveStartDateChange={handleActiveDateChange}
+              minDate={new Date()}
+              formatDay={(locale, date) =>
+                date.toLocaleString("en", { day: "numeric" })
+              }
+              showNavigation={false}
+              showDoubleView={isWeb}
+              view="month"
+              tileClassName={({ date, view }) => {
+                let className = "";
+                if (view === "month") {
+                  if (date.getDay() === 6) {
+                    className += " saturday";
+                  }
+                  if (date.getDay() === 0) {
+                    className += " sunday";
+                  }
+                  return className.trim();
+                }
+
+                return null;
+              }}
+              tileContent={tileContent}
+            />
+          </div>
+        </div>
+        <div className="select-button">
+          <Button onClick={handleDone}>완료</Button>
         </div>
       </div>
-      <div className="select-button">
-        <Button onClick={handleDone}>완료</Button>
-      </div>
-    </div>
+    </ItineraryModal>
   );
 };
 

@@ -9,7 +9,7 @@ import {
   OffersSearchData,
 } from "@/types";
 import Result from "./Result";
-import "./result.scss";
+import "./Result.scss";
 
 const AMADEUS_API_SERVER = process.env.NEXT_PUBLIC_AMADEUS_API_SERVER;
 

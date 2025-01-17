@@ -19,6 +19,30 @@
     line-height: 1;
     padding-bottom: var(--title-extra);
     border-bottom: 1px solid var(--color-gray-50);
+
+    &.with-check {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+
+      .title-check-box {
+        display: flex;
+        font-size: var(--title-big);
+        align-items: center;
+
+        label {
+          padding: unset;
+          margin: unset;
+          font-size: inherit;
+          font-weight: 500;
+
+          &::before {
+            display: none;
+          }
+        }
+      }
+    }
   }
 
   section {

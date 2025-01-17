@@ -73,11 +73,11 @@
         content: "최근 로그인";
         display: block;
         position: absolute;
-        bottom: -0.5rem;
+        top: -0.5rem;
         left: 50%;
-        transform: translate(-50%, 100%);
+        transform: translate(-50%, -100%);
         width: max-content;
-        font-size: var(--title-medium);
+        font-size: var(--title-small);
         background: var(--color-primary-30);
         color: var(--color-primary);
         border-radius: 0.4em;
@@ -88,9 +88,9 @@
         content: "";
         display: block;
         position: absolute;
-        bottom: -0.5rem;
+        top: -0.5rem;
         left: 50%;
-        transform: translate(-50%, 50%) rotate(45deg);
+        transform: translate(-50%, -50%) rotate(45deg);
         font-size: var(--title-medium);
         background: var(--color-primary-30);
         width: 0.8rem;

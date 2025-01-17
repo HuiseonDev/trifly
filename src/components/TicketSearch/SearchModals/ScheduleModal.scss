@@ -29,6 +29,7 @@
   .calendars {
     width: 100%;
     flex-grow: 1;
+    padding-top: 2rem;
 
     .calendar {
       flex-grow: 1;
@@ -121,7 +122,7 @@
         }
 
         &:nth-child(n + 36) {
-          visibility: hidden;
+          // visibility: hidden;
 
           &::not(:empty) {
             visibility: visible;
@@ -179,10 +180,10 @@
 
         .tile-today {
           position: absolute;
-          bottom: 0.2rem;
+          bottom: 0.1rem;
           left: 50%;
           transform: translateX(-50%);
-          font-size: 0.8rem;
+          font-size: 0.7rem;
           font-weight: 400;
           color: var(--color-secondary);
         }
@@ -234,6 +235,7 @@
       }
     }
   }
+
   .select-button {
     margin-top: auto;
 

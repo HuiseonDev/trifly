@@ -45,16 +45,16 @@ const Home = async () => {
 
         <div className="notice-items">
           <div className="notice-item">
+            <Badge type="secondary">NEW</Badge>
+            <Link href="/notice/infuel">2025년 1월 유류할증 안내</Link>
+            <p className="pc">2024.12.23</p>
+          </div>
+          <div className="notice-item">
             <Badge>HOT</Badge>
             <Link href="/notice/1">
               최초 발권 후 24시 이내 환불 처리 방침 변경 항공(국제선) 안내
             </Link>
             <p className="pc">2024.08.01</p>
-          </div>
-          <div className="notice-item">
-            <Badge>HOT</Badge>
-            <Link href="/notice/2">2024년 8월 유류할증 안내</Link>
-            <p className="pc">2024.07.12</p>
           </div>
         </div>
       </section>

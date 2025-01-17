@@ -186,6 +186,10 @@
       & input[type="range"] {
         width: 100%;
         height: 0.4rem;
+
+        &:disabled {
+          cursor: not-allowed;
+        }
       }
 
       & label {

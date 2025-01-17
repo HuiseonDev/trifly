@@ -4,12 +4,13 @@ import { modalState, orderState, searchResultState } from "@/atoms/atoms";
 import Badge from "@/components/Badge/Badge";
 import Submit from "@/components/Submit/Submit";
 import orderAction from "@/data/actions/orderAction";
+import useCreateTestUser from "@/hook/useCreateTestUser";
 import usePersonalPrice from "@/hook/usePersonalPrice";
 import { countries } from "@/lib/countries";
 import { AirportData, CodeState, IMPData, Purchaser } from "@/types";
 import { User } from "next-auth";
 import { useRouter } from "next/navigation";
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 
@@ -58,7 +59,21 @@ const PaymentForm = ({
   const passengers = usePersonalPrice();
   const [clickedTitle, setClickedTitle] = useState(["0-0"]);
   const resetSearchResultData = useResetRecoilState(searchResultState);
+  const totalNum = passengers.reduce((acc, item) => acc + item.length, 0);
+  const testUsers = useMemo(() => useCreateTestUser(totalNum), [totalNum]);
+  const [isFillBlank, setFillBlank] = useState(true);
 
+  const changeIsFillBlank = () => {
+    const currentValues = getValues();
+    const savedPurchaser = currentValues.purchaser; // purchaser 값만 저장
+    reset(); // 폼 초기화
+
+    // isFillBlank 값에 따라 값을 설정하고 복원
+    if (savedPurchaser) setValue("purchaser", savedPurchaser);
+    setFillBlank(!isFillBlank);
+  };
+
+  // 랜덤 예약 번호 생성
   const generateRandomStr = () => {
     let letters = "";
     let numbers = "";
@@ -86,6 +101,9 @@ const PaymentForm = ({
   const {
     register,
     handleSubmit,
+    reset,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm<PaymentData>();
 
@@ -103,7 +121,7 @@ const PaymentForm = ({
     image: string,
   ) => {
     resetSearchResultData();
-    const result = await orderAction(
+    await orderAction(
       formData,
       itineraries,
       price,
@@ -119,11 +137,6 @@ const PaymentForm = ({
   ) => {
     const submitButtonText = (e!.nativeEvent as HTMLFormElement).submitter
       .innerText;
-    let totalNum = 0;
-    passengers.forEach((item) => {
-      totalNum += item.length;
-      return null;
-    });
     const charge = totalNum * +process.env.NEXT_PUBLIC_CHARGE!;
     const finalPrice = +totalPrice + charge;
     const arrival =
@@ -350,7 +363,6 @@ const PaymentForm = ({
                 id="emergencyPhone1"
                 maxLength={3}
                 placeholder="010"
-                defaultValue="010"
                 {...register("purchaser.emergencyPhone1", {
                   required: "비상 연락처를 입력하세요.",
                   minLength: {
@@ -369,7 +381,6 @@ const PaymentForm = ({
                 id="emergencyPhone2"
                 maxLength={4}
                 placeholder="1234"
-                defaultValue="1234"
                 {...register("purchaser.emergencyPhone2", {
                   required: "비상 연락처를 입력하세요.",
                   minLength: {
@@ -388,7 +399,6 @@ const PaymentForm = ({
                 id="emergencyPhone3"
                 maxLength={4}
                 placeholder="5678"
-                defaultValue="5678"
                 {...register("purchaser.emergencyPhone3", {
                   required: "비상 연락처를 입력하세요.",
                   minLength: {
@@ -413,29 +423,25 @@ const PaymentForm = ({
       </div>
 
       <div className="input-inner passenger">
-        <h3 className="title">탑승자 정보</h3>
+        <h3 className="title with-check">
+          탑승자 정보
+          <div className="title-check-box">
+            <input
+              type="checkbox"
+              name="테스트 유저"
+              id="fillBlank"
+              checked={isFillBlank}
+              onChange={changeIsFillBlank}
+            />
+            <label htmlFor="fillBlank">랜덤 데이터로 빈칸 채우기</label>
+          </div>
+        </h3>
+
         <div className="input-toggle">
           {passengers.map((item, idx) => {
             if (!item.length) return false;
             const type = idx === 0 ? "성인" : idx === 1 ? "소아" : "유아";
             const typeEn = idx === 0 ? "adult" : idx === 1 ? "child" : "infant";
-            const testUsers = [
-              {
-                nameKor: "이소정",
-                nameEngFirst: "SOJEONG",
-                nameEngLast: "LEE",
-              },
-              {
-                nameKor: "전희선",
-                nameEngFirst: "HEESEON",
-                nameEngLast: "JEON",
-              },
-              {
-                nameKor: "정진욱",
-                nameEngFirst: "JINWOOK",
-                nameEngLast: "JUNG",
-              },
-            ];
 
             return item.map((_, count) => {
               const key = `[${typeEn}_${count}]`;
@@ -477,7 +483,9 @@ const PaymentForm = ({
                         id="nameKor"
                         placeholder="이름을 입력하세요"
                         type="text"
-                        defaultValue={testUsers[idx].nameKor}
+                        defaultValue={
+                          isFillBlank ? testUsers[count].nameKor : ""
+                        }
                         {...register(`passengers.${key}.nameKor`, {
                           required: "이름을 입력하세요.",
                           minLength: {
@@ -498,9 +506,12 @@ const PaymentForm = ({
                         <input
                           id={`passengers.${key}.genderM`}
                           type="radio"
-                          value="M"
                           className="hidden"
-                          checked={idx === 2}
+                          defaultChecked={
+                            isFillBlank
+                              ? testUsers[count].gender === "M"
+                              : false
+                          }
                           {...register(`passengers.${key}.gender`, {
                             required: "성별을 선택하세요.",
                           })}
@@ -512,8 +523,12 @@ const PaymentForm = ({
                           id={`passengers.${key}.genderF`}
                           type="radio"
                           value="F"
-                          checked={idx !== 2}
                           className="hidden"
+                          defaultChecked={
+                            isFillBlank
+                              ? testUsers[count].gender === "F"
+                              : false
+                          }
                           {...register(`passengers.${key}.gender`, {
                             required: "성별을 선택하세요.",
                           })}
@@ -536,7 +551,9 @@ const PaymentForm = ({
                         id={`passengers.${key}.nameEngLast`}
                         className="text-upper"
                         placeholder="영문 성을 입력하세요"
-                        defaultValue={testUsers[idx].nameEngLast}
+                        defaultValue={
+                          isFillBlank ? testUsers[count].nameEngLast : ""
+                        }
                         type="text"
                         {...register(`passengers.${key}.nameEngLast`, {
                           required: "영문 성을 입력하세요.",
@@ -556,7 +573,9 @@ const PaymentForm = ({
                         className="text-upper"
                         placeholder="영문 이름을 입력하세요"
                         type="text"
-                        defaultValue={testUsers[idx].nameEngFirst}
+                        defaultValue={
+                          isFillBlank ? testUsers[count].nameEngFirst : ""
+                        }
                         {...register(`passengers.${key}.nameEngFirst`, {
                           required: "영문 이름을 입력하세요.",
                         })}
@@ -573,7 +592,7 @@ const PaymentForm = ({
                         type="tel"
                         maxLength={8}
                         placeholder="20020101"
-                        defaultValue="19901010"
+                        defaultValue={isFillBlank ? testUsers[count].birth : ""}
                         {...register(`passengers.${key}.birth`, {
                           required: "생년월일을 입력하세요.",
                           minLength: {
@@ -598,7 +617,9 @@ const PaymentForm = ({
                           id="phone1"
                           maxLength={3}
                           placeholder="010"
-                          defaultValue="010"
+                          defaultValue={
+                            isFillBlank ? testUsers[count].phone1 : ""
+                          }
                           {...register(`passengers.${key}.phone1`, {
                             required: "핸드폰 번호를 입력하세요.",
                             minLength: {
@@ -617,7 +638,9 @@ const PaymentForm = ({
                           id="phone2"
                           maxLength={4}
                           placeholder="1234"
-                          defaultValue="1234"
+                          defaultValue={
+                            isFillBlank ? testUsers[count].phone2 : ""
+                          }
                           {...register(`passengers.${key}.phone2`, {
                             required: "핸드폰 번호를 입력하세요.",
                             minLength: {
@@ -636,7 +659,9 @@ const PaymentForm = ({
                           id="phone3"
                           maxLength={4}
                           placeholder="5678"
-                          defaultValue="5678"
+                          defaultValue={
+                            isFillBlank ? testUsers[count].phone3 : ""
+                          }
                           {...register(`passengers.${key}.phone3`, {
                             required: "핸드폰 번호를 입력하세요.",
                             minLength: {
@@ -664,7 +689,9 @@ const PaymentForm = ({
                         type="text"
                         placeholder="M12345678"
                         maxLength={9}
-                        defaultValue="M12345678"
+                        defaultValue={
+                          isFillBlank ? testUsers[count].passport.number : ""
+                        }
                         {...register(`passengers.${key}.passport.number`, {
                           minLength: {
                             value: 9,
@@ -685,7 +712,9 @@ const PaymentForm = ({
                         type="tel"
                         maxLength={8}
                         placeholder="20020101"
-                        defaultValue="20271212"
+                        defaultValue={
+                          isFillBlank ? testUsers[count].passport.expDate : ""
+                        }
                         {...register(`passengers.${key}.passport.expDate`, {
                           minLength: {
                             value: 8,
@@ -738,7 +767,7 @@ const PaymentForm = ({
                         id="email"
                         placeholder="이메일을 입력하세요"
                         type="text"
-                        defaultValue="test@email.com"
+                        defaultValue={isFillBlank ? testUsers[count].email : ""}
                         {...register(`passengers.${key}.email`)}
                       />
                     </div>

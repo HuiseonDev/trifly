@@ -1,24 +1,30 @@
 import "@/app/(default)/(ticket)/ticket-result/Filter.scss";
 import { FilterProps } from "@/atoms/atoms";
-import { ChangeEvent, memo, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  memo,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
 const OriginDepTime = memo(
   ({
+    originDepTime: initialOriginDepTime,
     handleFilterChange,
   }: {
-    handleFilterChange: (filter: FilterProps) => void;
+    originDepTime: number[];
+    handleFilterChange: Dispatch<SetStateAction<FilterProps>>;
   }) => {
-    const [originDepTime, setOriginDepTime] = useState<number[]>([
-      6, 12, 18, 24,
-    ]);
-
-    console.log("가는날 출발시간 필터 렌더링");
+    const [originDepTime, setOriginDepTime] =
+      useState<number[]>(initialOriginDepTime);
 
     /* -------------------------------------------------------------------------- */
     /*                             출도착 시간 변경 처리                               */
     /* -------------------------------------------------------------------------- */
     useEffect(() => {
-      handleFilterChange({ originDepTime });
+      handleFilterChange((prev) => ({ ...prev, originDepTime }));
     }, [originDepTime]);
 
     const handleOriginDepChange = (e: ChangeEvent<HTMLInputElement>) => {

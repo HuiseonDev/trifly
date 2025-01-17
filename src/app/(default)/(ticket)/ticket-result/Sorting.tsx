@@ -1,14 +1,19 @@
-import { ChangeEvent, memo } from "react";
+import { FilterProps } from "@/atoms/atoms";
+import { ChangeEvent, Dispatch, memo, SetStateAction } from "react";
 
 const Sorting = memo(
   ({
-    handleSorting,
+    sortBy,
+    handleFilterChange,
     tripType,
   }: {
-    handleSorting: (e: ChangeEvent<HTMLSelectElement>) => void;
+    sortBy: string;
+    handleFilterChange: Dispatch<SetStateAction<FilterProps>>;
     tripType: string;
   }) => {
-    console.log("Sorting 렌더링");
+    const handleSorting = (e: ChangeEvent<HTMLSelectElement>) => {
+      handleFilterChange((prev) => ({ ...prev, sortBy: e.target.value }));
+    };
 
     return (
       <div className="result-list-sort">
@@ -21,6 +26,7 @@ const Sorting = memo(
             className="sorting"
             name="sorting"
             id="sorting"
+            value={sortBy}
             onChange={handleSorting}
           >
             <option value="priceLow">가격 낮은 순</option>

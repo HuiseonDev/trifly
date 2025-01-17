@@ -123,8 +123,7 @@ const Ticket = ({
                 </dl>
                 <dl>
                   <dt>Seat</dt>
-                  {/* <dd>{seats ? seats[idx][passengerId] : "-"}</dd> */}
-                  <dd>{seats ? seats[passengerId] : "-"}</dd>
+                  <dd>{idx === 0 ? seats![passengerId] : "-"}</dd>
                 </dl>
               </div>
               <div className="barcode">

@@ -5,10 +5,14 @@
   padding: 1.5rem 2rem;
   box-sizing: border-box;
   background-color: var(--color-white);
-  // box-shadow: -0.1rem 0.4rem 1.2rem rgba(0, 0, 0, 0.16);
   border-radius: 1.4rem;
   flex-shrink: 0;
   position: relative;
+
+  .recent-search-badge {
+    display: flex;
+    gap: 0.4rem;
+  }
 
   .delete-result {
     width: 2rem;

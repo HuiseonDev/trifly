@@ -4,10 +4,15 @@
   border-radius: 2rem;
   background-color: var(--color-white);
   box-sizing: border-box;
+  margin-bottom: 2rem;
 
   display: flex;
   align-items: center;
   transition: all var(--transition-duration);
+
+  &.isLast {
+    margin-bottom: unset;
+  }
 
   .ticket-itinerary {
     width: 75%;

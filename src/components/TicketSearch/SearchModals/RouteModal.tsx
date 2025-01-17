@@ -1,11 +1,12 @@
 import { AirportData } from "@/types";
-import "./RouteModal.scss";
-import { useEffect, useState } from "react";
 import Image from "next/image";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import ItineraryModal from "./ItineraryModal";
+import "./RouteModal.scss";
 
 interface BaseProps {
   type: "origin" | "destination";
-  handleClose: (a: boolean) => void;
+  handleClose: Dispatch<SetStateAction<boolean>>;
   airport: AirportData[];
 }
 
@@ -32,6 +33,7 @@ const RouteModal = ({
 }: RouteModalProps) => {
   const [selectedArea, setSelectedArea] = useState("대한민국");
   const [airportList, setAirportList] = useState<JSX.Element[]>([]);
+
   const areas = [
     "대한민국",
     "일본",
@@ -119,28 +121,32 @@ const RouteModal = ({
   ));
 
   return (
-    <div className="route-modal">
-      <button
-        className="close-button img-box"
-        type="button"
-        onClick={() => handleClose(false)}
-      >
-        <Image
-          src="/img/icon-close-black.svg"
-          alt="닫기"
-          width={0}
-          height={0}
-          sizes="100%"
-        />
-        <span className="hidden">닫기</span>
-      </button>
-      <div className="area-section">
-        <ul className="area-list">{areaList}</ul>
+    <ItineraryModal handleClose={handleClose}>
+      <div className="route-modal">
+        <button
+          className="close-button img-box"
+          type="button"
+          onClick={() => {
+            handleClose(false);
+          }}
+        >
+          <Image
+            src="/img/icon-close-black.svg"
+            alt="닫기"
+            width={0}
+            height={0}
+            sizes="100%"
+          />
+          <span className="hidden">닫기</span>
+        </button>
+        <div className="area-section">
+          <ul className="area-list">{areaList}</ul>
+        </div>
+        <div className="airport-section">
+          <ul className="airport-list">{airportList}</ul>
+        </div>
       </div>
-      <div className="airport-section">
-        <ul className="airport-list">{airportList}</ul>
-      </div>
-    </div>
+    </ItineraryModal>
   );
 };
 

@@ -10,7 +10,6 @@ const SearchInfo = ({
   airport,
 }: {
   code: CodeState<AirportData>;
-
   airport: AirportData[];
 }) => {
   const [searchMode, setSearchMode] = useState(false);
@@ -28,7 +27,7 @@ const SearchInfo = ({
           handleChange={handleChange}
         />
       ) : (
-        <SearchInfoBox code={code} handleChange={handleChange} />
+        <SearchInfoBox handleChange={handleChange} />
       )}
     </>
   );
