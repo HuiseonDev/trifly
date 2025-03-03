@@ -5,7 +5,7 @@ import Button from "@/components/Button/Button";
 import Submit from "@/components/Submit/Submit";
 import signupAction from "@/data/actions/signupAction";
 import { UserForm } from "@/types";
-import { Dispatch, useState } from "react";
+import { Dispatch } from "react";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 
@@ -24,19 +24,13 @@ const Join = ({ setStep, setName }: SignupStepProp) => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<UserData>();
 
-  const [isPasswordDifferent, setIsPasswordDifferent] = useState(false);
   const setModal = useSetRecoilState(modalState);
 
   const handleJoin = async (formData: UserData) => {
-    if (formData.password !== formData.passwordChk) {
-      setIsPasswordDifferent(true);
-      return false;
-    }
-
-    setIsPasswordDifferent(false);
     const res = await signupAction(formData);
     if (res === 1) {
       setStep(3);
@@ -96,6 +90,10 @@ const Join = ({ setStep, setName }: SignupStepProp) => {
               placeholder="비밀번호를 입력하세요"
               {...register("password", {
                 required: "비밀번호를 입력하세요.",
+                pattern: {
+                  value: /^(?=.*[a-z])(?=.*\d)(?=.*[\W_])[a-z\d\W_]+$/,
+                  message: "영문, 숫자, 특수문자를 모두 포함해주세요.",
+                },
               })}
             />
           </div>
@@ -104,7 +102,6 @@ const Join = ({ setStep, setName }: SignupStepProp) => {
               비밀번호 확인
               <span className="errorMsg">
                 {errors && errors.passwordChk?.message}
-                {isPasswordDifferent && "비밀번호가 동일하지 않습니다."}
               </span>
             </label>
             <input
@@ -113,6 +110,12 @@ const Join = ({ setStep, setName }: SignupStepProp) => {
               placeholder="비밀번호를 다시 입력하세요"
               {...register("passwordChk", {
                 required: "비밀번호를 입력하세요.",
+                validate: {
+                  matchPassword: (value) => {
+                    const { password } = getValues();
+                    return password === value || "비밀번호가 일치하지 않습니다";
+                  },
+                },
               })}
             />
           </div>

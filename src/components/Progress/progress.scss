@@ -87,6 +87,12 @@
           opacity: 1;
         }
       }
+
+      &.visitedPage {
+        &::after {
+          opacity: 0;
+        }
+      }
     }
   }
 

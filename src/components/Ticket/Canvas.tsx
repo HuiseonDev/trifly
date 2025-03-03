@@ -2,6 +2,7 @@
 
 import fileUploadAction from "@/data/actions/fileUploadAction";
 import orderFatchAction from "@/data/actions/orderPatchAction";
+import useAddVisitedPage from "@/hook/useAddVisitedPage";
 import saveAs from "file-saver";
 import html2canvas from "html2canvas";
 import Link from "next/link";
@@ -32,6 +33,9 @@ const Canvas = ({
   const [history, setHistory] = useState<string[]>([]);
   const [isCanvasChange, setIsCanvasChange] = useState(false);
 
+  // 사용성 테스트
+  const { setVisitedPage } = useAddVisitedPage();
+
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return false;
     const reader = new FileReader();
@@ -46,6 +50,9 @@ const Canvas = ({
   };
 
   const handleDownload = async () => {
+    // 사용자 테스트
+    setVisitedPage("발자국");
+
     if (!ticketRef.current || !imgBoxRef.current) return;
 
     // 모바일 툴박스 안보이도록 클래스 추가
@@ -111,6 +118,7 @@ const Canvas = ({
     const img = new Image();
     img.src = previousState;
     img.onload = () => {
+      if (!ctx) return;
       ctx.clearRect(0, 0, canvasSize.width, canvasSize.height);
       ctx.drawImage(img, 0, 0);
     };
@@ -121,6 +129,8 @@ const Canvas = ({
     if (history.length === 0) saveState();
 
     setIsCanvasChange(true);
+    if (!ctx) return;
+
     ctx.beginPath();
     pos = { drawable: true, ...getPosition(e) };
     ctx.moveTo(pos.X, pos.Y);
@@ -134,6 +144,8 @@ const Canvas = ({
   const draw = (e: MouseEvent | TouchEvent) => {
     if (pos.drawable) {
       pos = { ...pos, ...getPosition(e) };
+
+      if (!ctx) return;
       ctx.lineTo(pos.X, pos.Y);
       ctx.stroke();
     }
@@ -152,14 +164,23 @@ const Canvas = ({
   };
 
   const handleClear = () => {
+    if (!ctx) return;
     ctx.clearRect(0, 0, canvasSize.width, canvasSize.height);
     setHistory([]);
   };
 
   useEffect(() => {
     canvas = canvasRef.current!;
+    if (!canvas) return;
     ctx = canvas.getContext("2d")!;
+  }, [canvasRef]);
 
+  useEffect(() => {
+    const { clientWidth, clientHeight } = canvasBoxRef.current!;
+    setCanvasSize({ width: clientWidth, height: clientHeight });
+  }, []);
+
+  useEffect(() => {
     const handleMouseDown = (e: MouseEvent | TouchEvent) => initDraw(e);
     const handleMouseMove = (e: MouseEvent | TouchEvent) => draw(e);
     const handleMouseUp = () => finishDraw();
@@ -182,12 +203,7 @@ const Canvas = ({
       canvas.removeEventListener("touchmove", handleMouseMove);
       canvas.removeEventListener("touchend", handleMouseUp);
     };
-  });
-
-  useEffect(() => {
-    const { clientWidth, clientHeight } = canvasBoxRef.current!;
-    setCanvasSize({ width: clientWidth, height: clientHeight });
-  }, []);
+  }, [color, brushSize]);
 
   return (
     <div className="canvas-inner">

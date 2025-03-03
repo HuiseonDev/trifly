@@ -11,9 +11,6 @@ const SearchKeyWords = () => {
         placeholder="예약번호를 입력해주세요"
         className="search-input"
         name="keyword"
-        onChange={(e) => {
-          console.log(e.target.value);
-        }}
       />
       <Button type="submit" size="sm" bgColor="primary">
         검색

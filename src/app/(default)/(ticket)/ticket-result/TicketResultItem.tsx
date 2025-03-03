@@ -2,13 +2,14 @@
 
 import { modalState, orderState, searchResultState } from "@/atoms/atoms";
 import Badge from "@/components/Badge/Badge";
+import Loading from "@/components/Loading/Loading";
 import flightPriceAction from "@/data/actions/flightPriceAction";
+import useAddVisitedPage from "@/hook/useAddVisitedPage";
 import { AirlineData, CodeState, OffersSearchData } from "@/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import "./TicketResultItem.scss";
-import Loading from "@/components/Loading/Loading";
 
 const TicketResultItem = ({
   user,
@@ -29,9 +30,11 @@ const TicketResultItem = ({
 
   const fetchPrice = async (data: OffersSearchData) => {
     const flightPrice = await flightPriceAction(data);
-
     return flightPrice;
   };
+
+  // 사용자 테스트
+  const { setVisitedPage } = useAddVisitedPage();
 
   /* -------------------------------------------------------------------------- */
   /*                              PT6H10 -> 6시간 10분                            */
@@ -237,6 +240,9 @@ const TicketResultItem = ({
     const totalPrice: string = item.price.total;
     const departureDate: string = searchResult.schedule.departureFormattedDate;
     const returnDate: string = searchResult.schedule.returnFormattedDate;
+
+    // 사용자 테스트
+    setVisitedPage("항공권 검색");
 
     if (user) {
       setModal({

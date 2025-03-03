@@ -101,7 +101,7 @@ const LoginForm = () => {
           </div>
 
           <div className="input-box">
-            <div className="chk-box">
+            {/* <div className="chk-box">
               <input
                 type="checkbox"
                 name="getTestUser"
@@ -109,7 +109,7 @@ const LoginForm = () => {
                 onChange={(e) => handleTestUser(e)}
               />
               <label htmlFor="getTestUser">테스트 계정 불러오기</label>
-            </div>
+            </div> */}
             <div className="chk-box">
               <input
                 type="checkbox"

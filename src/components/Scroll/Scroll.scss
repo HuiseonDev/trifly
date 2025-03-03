@@ -1,4 +1,4 @@
-.scroll-box {
+.seatmap-scroll-box {
   visibility: hidden;
   padding-top: 80px;
   display: flex;
@@ -12,7 +12,7 @@
   opacity: 1;
   animation: fadeOut 8s forwards;
 
-  .scroll-box-text {
+  .seatmap-scroll-box-text {
     font-size: var(--title-large);
     font-weight: 500;
     margin: 0 1rem;

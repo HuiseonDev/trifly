@@ -10,11 +10,6 @@ const Journey = async ({
   data: OrderItem;
   code: CodeState<AirportData>;
 }) => {
-  // console.log("zzzzzzzzzzzzzata", data);
-  // //공항 코드 조회
-  // const {codes} = await fetchCodes();
-  // console.log(codes["ICN"].value)
-
   const itinerary = data?.itineraries.map((item, idx) => {
     const arrivalCode =
       item.segments.length >= 2
@@ -23,14 +18,15 @@ const Journey = async ({
 
     const departureCode = item.segments[0].departure.iataCode;
 
-    // console.log(item.segments.map((item) => item.departure));
     return (
       <div className="ticket-detail-item" key={idx}>
         <div className="journey-box">
           <div className="journey">
             <div className="box departure">
               <span className="airport-code">{departureCode}</span>
-              <span className="airport-kr">{code[departureCode].value}</span>
+              <span className="airport-kr">
+                {code[departureCode] ? code[departureCode].value : ""}
+              </span>
               <span className="airline-at">
                 {item.segments[0].departure.at.substring(0, 10)}
               </span>
@@ -55,13 +51,11 @@ const Journey = async ({
 
             <div className="box arrival">
               <div className="circle" />
-              <span className="airport-code">
-                {/* {itinerary.segments[0].arrival.iataCode} */}
-                {item.segments.length >= 2
-                  ? item.segments[1].arrival.iataCode
-                  : item.segments[0].arrival.iataCode}
+              <span className="airport-code">{arrivalCode}</span>
+              <span className="airport-kr">
+                {code[arrivalCode] ? code[arrivalCode].value : ""}
               </span>
-              <span className="airport-kr">{code[arrivalCode].value}</span>
+              <span className="airport-kr"></span>
               <span className="airline-at">
                 {item.segments[0].arrival.at.substring(0, 10)}
               </span>

@@ -1,0 +1,54 @@
+.user-test-page {
+  // 공통
+  strong {
+    letter-spacing: 0.005em;
+  }
+
+  .errorMsg {
+    display: block;
+    padding-left: var(--title-medium);
+    padding-top: 0.6rem;
+  }
+
+  .desc {
+    margin-top: 1rem;
+    color: #737980;
+  }
+
+  // 별점
+  .rating-box {
+    ul {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    input {
+      display: none;
+    }
+
+    button {
+      display: block;
+      width: 3.2rem;
+      aspect-ratio: 1/1;
+      background: url(/img/icon-rating.svg) no-repeat center left / 200%;
+
+      &.active {
+        background-position: center right;
+      }
+    }
+
+    .errorMsg {
+      padding-left: 0.5rem;
+    }
+  }
+
+  form {
+    margin-top: 3rem;
+  }
+
+  .button-box {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+  }
+}

@@ -5,15 +5,22 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 interface PaginationPropType {
-  page: number;
+  page: number | string;
   totalPages: number;
+  list: number;
+  itemsPerPage: number;
 }
 
-const Pagination: React.FC<PaginationPropType> = ({ page, totalPages }) => {
+const Pagination: React.FC<PaginationPropType> = ({ totalPages, list }) => {
   const searchParams = useSearchParams();
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? parseInt(pageParam, 10) : 1;
   const pageList = [];
+  const listItems = 5;
+  const dynamicTotalPages =
+    list < totalPages ? Math.ceil(list / listItems) : totalPages;
 
-  for (let i = 1; i <= totalPages; i += 1) {
+  for (let i = 1; i <= dynamicTotalPages; i += 1) {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("page", String(i));
     const search = newSearchParams.toString();
@@ -22,7 +29,7 @@ const Pagination: React.FC<PaginationPropType> = ({ page, totalPages }) => {
       <li key={i} className="pagination-number">
         <Link
           href={`/reservation?${search}`}
-          className={page === i ? "active" : "unactive"}
+          className={String(page) === String(i) ? "active" : "unactive"}
         >
           {i}
         </Link>

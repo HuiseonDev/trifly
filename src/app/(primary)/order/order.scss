@@ -606,6 +606,10 @@
   }
 
   @media (max-width: 1023px) {
+    .progress {
+      top: calc(var(--header-height) * -0.4);
+    }
+
     .flexVer {
       flex-direction: column;
 
@@ -645,6 +649,7 @@
     }
 
     .order-inner {
+      padding-top: 6rem;
       .receipt-box {
         width: 100%;
         position: relative;
@@ -658,6 +663,15 @@
     .complete {
       .info-box {
         display: none;
+      }
+
+      .reservation-box {
+        font-size: 1.4rem;
+
+        .reservation-tit {
+          font-size: 1.8rem;
+          padding-top: 3rem;
+        }
       }
     }
   }

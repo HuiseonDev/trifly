@@ -30,11 +30,8 @@ const OrdersList = ({ keyword, page }: { keyword: string; page: string }) => {
     });
 
   const pages = data?.pages;
-  console.log(pages);
-  const item = pages?.map((page) => page.item);
-  console.log(item);
-  // const item = pages.map((page: { item }) => pages.item.map((id) => id));
-  // console.log(item);
+  // const item = pages?.map((page) => page.item);
+
   // 로딩 상태 처리
   if (isLoading) {
     return <div className="infinite-scroll-loading">로딩 중...</div>;
@@ -105,12 +102,14 @@ const OrdersList = ({ keyword, page }: { keyword: string; page: string }) => {
         </tbody>
       </table>
       {isFetchingNextPage && (
-        <div className="infinite-scroll-more-loading">추가 로딩중...</div>
+        <div className="infinite-scroll-more-loading">
+          예약 내역 불러오는중...
+        </div>
       )}
       {hasNextPage && !isFetchingNextPage && (
         <div className="infinite-scroll-button">
           <Button bgColor="light" onClick={() => fetchNextPage()}>
-            더 보기
+            더보기
           </Button>
         </div>
       )}

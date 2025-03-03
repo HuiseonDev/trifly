@@ -4,11 +4,15 @@ import Badge from "@/components/Badge/Badge";
 import { OrderItem } from "@/types";
 import { useRouter } from "next/navigation";
 import "./OrdersItem.scss";
+import useAddVisitedPage from "@/hook/useAddVisitedPage";
 
 const OrdersItem = ({ item }: { item: OrderItem }) => {
   const router = useRouter();
+  const { setVisitedPage } = useAddVisitedPage();
 
   const handleClick = (_id: number) => {
+    // 사용자 테스트
+    setVisitedPage("예약 확인");
     router.push(`/reservation/${_id}`);
   };
 

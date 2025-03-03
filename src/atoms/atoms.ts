@@ -188,3 +188,9 @@ export const loginTypeState = atom({
   default: "email",
   effects_UNSTABLE: [localPersistAtom],
 });
+
+export const userTestVisitedState = atom({
+  key: "userTestVisitedState",
+  default: ["홈"],
+  effects_UNSTABLE: [localPersistAtom],
+});

@@ -46,6 +46,8 @@
     font-weight: 500;
     margin-bottom: 4rem;
     text-align: center;
+    overflow: hidden auto;
+    max-height: calc(80vh - 17rem);
   }
 
   .modal-button-container {
@@ -71,6 +73,7 @@
 
       .modal-content {
         margin-bottom: 2rem;
+        max-height: calc(80vh - 8rem);
       }
     }
   }

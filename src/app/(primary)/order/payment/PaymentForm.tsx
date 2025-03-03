@@ -4,6 +4,7 @@ import { modalState, orderState, searchResultState } from "@/atoms/atoms";
 import Badge from "@/components/Badge/Badge";
 import Submit from "@/components/Submit/Submit";
 import orderAction from "@/data/actions/orderAction";
+import useAddVisitedPage from "@/hook/useAddVisitedPage";
 import useCreateTestUser from "@/hook/useCreateTestUser";
 import usePersonalPrice from "@/hook/usePersonalPrice";
 import { countries } from "@/lib/countries";
@@ -62,6 +63,9 @@ const PaymentForm = ({
   const totalNum = passengers.reduce((acc, item) => acc + item.length, 0);
   const testUsers = useMemo(() => useCreateTestUser(totalNum), [totalNum]);
   const [isFillBlank, setFillBlank] = useState(true);
+
+  // 사용자 테스트
+  const { setVisitedPage } = useAddVisitedPage();
 
   const changeIsFillBlank = () => {
     const currentValues = getValues();
@@ -143,6 +147,9 @@ const PaymentForm = ({
       itineraries[0].segments[itineraries[0].segments.length - 1].arrival
         .iataCode;
     const image = code[arrival].img;
+
+    // 사용자 테스트
+    setVisitedPage("항공권 예약");
 
     if (submitButtonText === "결제하기") {
       const { IMP } = window;

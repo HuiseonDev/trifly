@@ -81,6 +81,7 @@
       display: inline-block;
       margin-left: var(--title-min);
       font-size: var(--title-medium);
+      letter-spacing: -0.05rem;
     }
   }
 
@@ -193,5 +194,14 @@
 @media (max-width: 1023px) {
   .containerLayout {
     padding-bottom: 5.6rem;
+
+    &.primaryVer {
+      padding-top: calc(var(--header-height) + 6rem);
+    }
+  }
+
+  .input-form label .errorMsg {
+    font-size: 1.3rem;
+    margin-left: 0.8rem;
   }
 }

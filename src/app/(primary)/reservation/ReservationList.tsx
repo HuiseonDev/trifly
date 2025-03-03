@@ -53,7 +53,12 @@ const ReservationList = async ({
         </table>
       </section>
       {/* 모바일에서는 숨기기 */}
-      <Pagination {...data.pagination!} />
+      <Pagination
+        page={page}
+        totalPages={data.pagination.limit}
+        list={filteredItems.length}
+        itemsPerPage={5}
+      />
     </div>
   );
 };
