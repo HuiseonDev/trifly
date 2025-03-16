@@ -6,6 +6,12 @@ import { useRecoilState } from "recoil";
 import "./RecentSearch.scss";
 import RecentSearchResult from "./RecentSearchResult";
 
+function isAfterToday(dateString: string) {
+  const today = new Date();
+  const targetDate = new Date(dateString);
+  return today < targetDate;
+}
+
 // 로컬 스토리지 접근 필요
 const RecentSearch = () => {
   const [recentSearch, setRecentSearch] = useRecoilState(recentSearchState);
@@ -13,7 +19,15 @@ const RecentSearch = () => {
 
   useEffect(() => {
     setIsMounted(true);
-  }, [isMounted]);
+  }, []);
+
+  useEffect(() => {
+    // 오늘 날짜와 비교하여 필터링
+    const filteredSearch = recentSearch.filter((item) =>
+      isAfterToday(item.schedule.departureDate),
+    );
+    setRecentSearch(filteredSearch);
+  }, []);
 
   if (!isMounted) {
     return null;

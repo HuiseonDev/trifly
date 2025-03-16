@@ -9,17 +9,18 @@ import { useEffect, useMemo, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Filter from "./Filter";
 import TicketResultList from "./TicketResultList";
+import { ISearchParams } from "@/components/TicketSearch/SearchInfo";
 
 const Result = ({
   user,
   data,
   airline,
-  returnDate,
+  params,
 }: {
   user: boolean;
   data: OffersSearchData[];
   airline: CodeState<AirlineData>;
-  returnDate?: string;
+  params: ISearchParams;
 }) => {
   const searchResult = useRecoilValue(searchResultState);
   const [filters, setFilters] = useRecoilState(filterState);
@@ -55,7 +56,7 @@ const Result = ({
   /* -------------------------------------------------------------------------- */
   /*                                  필터 적용                                   */
   /* -------------------------------------------------------------------------- */
-  const filteredData = useFilters(data, filters, prices, returnDate);
+  const filteredData = useFilters(data, filters, prices, params.returnDate);
 
   /* -------------------------------------------------------------------------- */
   /*                         모바일 환경에서 뒤편 스크롤 고정                           */
@@ -100,8 +101,8 @@ const Result = ({
             <Filter
               airline={airline}
               carrierCodes={carrierCodes}
-              tripType={returnDate ? "round" : "oneway"}
-              nonStop={searchResult.nonStop}
+              tripType={params.returnDate ? "round" : "oneway"}
+              nonStop={Boolean(params.nonStop)}
               prices={prices}
               filters={filters}
               handleFilterChange={setFilters}
@@ -123,7 +124,7 @@ const Result = ({
                   검색결과 총 <span>{filteredData.length}</span>건
                 </p>
                 <p className="result-list-description">
-                  성인 1인 기준 {returnDate ? "왕복 " : "편도 "}
+                  성인 1인 기준 {params.returnDate ? "왕복 " : "편도 "}
                   요금입니다. <span>(세금 및 수수료 모두 포함)</span>
                 </p>
               </div>

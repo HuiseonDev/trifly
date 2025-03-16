@@ -25,6 +25,41 @@ interface ScheduleModalProps {
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
+/* -------------------------------------------------------------------------- */
+/*                                 편도 날짜 형식 수정                             */
+/* -------------------------------------------------------------------------- */
+export const formatDate = (data: Date) => {
+  const date = new Date(data);
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  const year = date.getFullYear();
+  const month1 = date.getMonth() + 1;
+  const month2 = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day1 = date.getDate();
+  const day2 = date.getDate().toString().padStart(2, "0");
+  const dayOfWeek = days[date.getDay()];
+
+  const formattedDate = `${month1}월 ${day1}일 (${dayOfWeek})`;
+  const selectedDate = `${year}-${month2}-${day2}`;
+
+  return { formattedDate, selectedDate };
+};
+
+/* -------------------------------------------------------------------------- */
+/*                                 왕복 날짜 형식 수정                             */
+/* -------------------------------------------------------------------------- */
+export const formatDates = (data: [Date, Date]) => {
+  const formattedDates: string[] = [];
+  const selectedDates: string[] = [];
+
+  data.forEach((item) => {
+    const { formattedDate, selectedDate } = formatDate(item);
+    formattedDates.push(formattedDate);
+    selectedDates.push(selectedDate);
+  });
+
+  return { formattedDates, selectedDates };
+};
+
 const ScheduleModal = ({
   tripType,
   handleClose,
@@ -43,41 +78,6 @@ const ScheduleModal = ({
   useEffect(() => {
     setDates(tripType === "round" ? [null, null] : null);
   }, [tripType]);
-
-  /* -------------------------------------------------------------------------- */
-  /*                                 편도 날짜 형식 수정                             */
-  /* -------------------------------------------------------------------------- */
-  const formatDate = (data: Date) => {
-    const date = new Date(data);
-    const days = ["일", "월", "화", "수", "목", "금", "토"];
-    const year = date.getFullYear();
-    const month1 = date.getMonth() + 1;
-    const month2 = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day1 = date.getDate();
-    const day2 = date.getDate().toString().padStart(2, "0");
-    const dayOfWeek = days[date.getDay()];
-
-    const formattedDate = `${month1}월 ${day1}일 (${dayOfWeek})`;
-    const selectedDate = `${year}-${month2}-${day2}`;
-
-    return { formattedDate, selectedDate };
-  };
-
-  /* -------------------------------------------------------------------------- */
-  /*                                 왕복 날짜 형식 수정                             */
-  /* -------------------------------------------------------------------------- */
-  const formatDates = (data: [Date, Date]) => {
-    const formattedDates: string[] = [];
-    const selectedDates: string[] = [];
-
-    data.forEach((item) => {
-      const { formattedDate, selectedDate } = formatDate(item);
-      formattedDates.push(formattedDate);
-      selectedDates.push(selectedDate);
-    });
-
-    return { formattedDates, selectedDates };
-  };
 
   /* -------------------------------------------------------------------------- */
   /*                                  이전 달로 이동                               */

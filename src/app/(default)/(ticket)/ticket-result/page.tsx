@@ -23,7 +23,7 @@ export interface IPageProps {
     children?: string;
     infants?: string;
     nonStop?: string;
-    travelClass?: "ECONOMY" | "PREMIUM_ECONOMY" | "BUSINESS" | "FIRST";
+    travelClass: "ECONOMY" | "PREMIUM_ECONOMY" | "BUSINESS" | "FIRST";
     currencyCode: "KRW";
   };
 }
@@ -102,13 +102,13 @@ const TicketResult = async ({ searchParams }: IPageProps) => {
         <h2 className="hidden">항공권 검색 결과</h2>
         <section className="search-info full-width">
           <h3 className="hidden">항공권 검색 정보</h3>
-          <SearchInfo code={code} airport={airportCode} />
+          <SearchInfo code={code} airport={airportCode} params={searchParams} />
         </section>
         <Result
           data={filteredData}
           user={user}
           airline={airline}
-          returnDate={returnDate}
+          params={searchParams}
         />
       </div>
     </>

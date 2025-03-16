@@ -20,6 +20,8 @@ const RecentSearchResult = ({
   const setSearchResult = useSetRecoilState(searchResultState);
   const setFilterState = useSetRecoilState(filterState);
 
+  console.log(recentSearch);
+
   const handleClick = () => {
     if (typeof window !== "undefined") {
       window.location.href = `/ticket-result?originLocationCode=${data.origin.code}&destinationLocationCode=${data.destination.code}&departureDate=${data.schedule.departureDate}${data.tripType === "round" ? `&returnDate=${data.schedule.returnDate}` : ""}&adults=${data.passengers.adults}${data.passengers.children > 0 ? `&children=${data.passengers.children}` : ""}${data.passengers.infants > 0 ? `&infants=${data.passengers.infants}` : ""}${data.nonStop ? `&nonStop=${data.nonStop}` : ""}${data.cabin.cabin ? `&travelClass=${data.cabin.cabin}` : ""}&currencyCode=KRW`;

@@ -1,6 +1,4 @@
-/* ---------------------------------------------------------------- */
-/*                           offers search                          */
-/* ---------------------------------------------------------------- */
+/* offers search */
 export interface OffersSearch {
   meta: {
     count: number;
@@ -73,9 +71,7 @@ export interface OffersSearchData extends OffersData {
   ];
 }
 
-/* ---------------------------------------------------------------- */
-/*                           offers price                           */
-/* ---------------------------------------------------------------- */
+/* offers price */
 export interface OffersPrice {
   data: {
     type: "flight-offers-pricing";
@@ -138,9 +134,7 @@ export interface TravelerPricing {
   }[];
 }
 
-/* ---------------------------------------------------------------- */
-/*                         search, price 공통                         */
-/* ---------------------------------------------------------------- */
+/* search, price 공통 속성 */
 interface OffersData {
   type: "flight-offer";
   id: string;
@@ -206,9 +200,7 @@ interface FlightRouteData {
   };
 }
 
-/* ---------------------------------------------------------------- */
-/*                           create-orders                          */
-/* ---------------------------------------------------------------- */
+/* create-orders */
 export interface NewOrderRequest {
   data: NewOrderData;
 }
@@ -321,10 +313,7 @@ interface NewOrderResponseData extends NewOrderData {
   ];
 }
 
-/* ---------------------------------------------------------------- */
-/*                              seatMap                             */
-/* ---------------------------------------------------------------- */
-
+/* seat map */
 export interface SeatMap {
   meta: {
     count: number;

@@ -3,8 +3,25 @@ import "./PassengersModal.scss";
 import Button from "@/components/Button/Button";
 import Image from "next/image";
 import { useSetRecoilState } from "recoil";
-import { modalState } from "@/atoms/atoms";
+import { ICabin, modalState } from "@/atoms/atoms";
 import ItineraryModal from "./ItineraryModal";
+
+export const convertToKor = (
+  type: "ECONOMY" | "PREMIUM_ECONOMY" | "BUSINESS" | "FIRST" | "DEFAULT",
+) => {
+  switch (type) {
+    case "ECONOMY":
+      return "일반석";
+    case "PREMIUM_ECONOMY":
+      return "프리미엄 일반석";
+    case "BUSINESS":
+      return "비즈니스석";
+    case "FIRST":
+      return "일등석";
+    case "DEFAULT":
+      return "모든 클래스";
+  }
+};
 
 interface PassengersModalProps {
   handleClose: Dispatch<SetStateAction<boolean>>;
@@ -18,8 +35,8 @@ interface PassengersModalProps {
     children: number;
     infants: number;
   }) => void;
-  cabin: { cabin: string; cabinKor: string };
-  setCabin: (obj: { cabin: string; cabinKor: string }) => void;
+  cabin: ICabin;
+  setCabin: (obj: ICabin) => void;
 }
 
 const PassengersModal = ({
@@ -36,26 +53,14 @@ const PassengersModal = ({
   const setModal = useSetRecoilState(modalState);
 
   const handleCabin = (e: ChangeEvent<HTMLInputElement>) => {
-    setCabinType(e.target.value);
-  };
-
-  const convertToKor = (type: string) => {
-    if (type === "") {
-      return "모든 클래스";
-    }
-
-    if (type === "ECONOMY") {
-      return "일반석";
-    }
-
-    if (type === "PREMIUM_ECONOMY") {
-      return "프리미엄 일반석";
-    }
-    if (type === "BUSINESS") {
-      return "비즈니스석";
-    }
-
-    return "일등석";
+    setCabinType(
+      e.target.value as
+        | "ECONOMY"
+        | "PREMIUM_ECONOMY"
+        | "BUSINESS"
+        | "FIRST"
+        | "DEFAULT",
+    );
   };
 
   const handlePassengers = () => {
@@ -244,12 +249,12 @@ const PassengersModal = ({
                 <input
                   type="radio"
                   name="cabin"
-                  value=""
-                  id="all"
-                  checked={cabinType === ""}
+                  value="DEFAULT"
+                  id="DEFAULT"
+                  checked={cabinType === "DEFAULT"}
                   onChange={handleCabin}
                 />
-                <label htmlFor="all">모든 클래스</label>
+                <label htmlFor="DEFAULT">모든 클래스</label>
               </div>
             </div>
 

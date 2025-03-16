@@ -3,6 +3,7 @@
 import {
   defaultFilterState,
   filterState,
+  ICabin,
   modalState,
   recentSearchState,
   searchResultState,
@@ -14,15 +15,18 @@ import { AirportData, CodeState } from "@/types";
 import Image from "next/image";
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import PassengersModal from "./SearchModals/PassengersModal";
-import ScheduleModal from "./SearchModals/ScheduleModal";
+import PassengersModal, { convertToKor } from "./SearchModals/PassengersModal";
+import ScheduleModal, { formatDate } from "./SearchModals/ScheduleModal";
 import "./TicketSearch.scss";
+import { ISearchParams } from "./SearchInfo";
 
 const TicketSearchBox = ({
+  params,
   code,
   airport,
   handleChange,
 }: {
+  params?: ISearchParams;
   code: CodeState<AirportData>;
   airport: AirportData[];
   handleChange?: () => void;
@@ -54,15 +58,15 @@ const TicketSearchBox = ({
     children: 0,
     infants: 0,
   });
-  const [cabin, setCabin] = useState({
-    cabin: "",
+  const [cabin, setCabin] = useState<ICabin>({
+    cabin: "DEFAULT",
     cabinKor: "모든 클래스",
   });
   const [passengersModal, setPassengersModal] = useState(false);
   const setModal = useSetRecoilState(modalState);
 
   useEffect(() => {
-    if (searchResult) {
+    if (!params && searchResult) {
       setTripType(searchResult.tripType);
       setNonStop(searchResult.nonStop);
       setOrigin({
@@ -87,6 +91,39 @@ const TicketSearchBox = ({
       setCabin({
         cabin: searchResult.cabin.cabin,
         cabinKor: searchResult.cabin.cabinKor,
+      });
+    }
+
+    if (params) {
+      setTripType(params.returnDate ? "round" : "oneway");
+      setNonStop(params.nonStop && JSON.parse(params.nonStop));
+      setOrigin({
+        code: code[params.originLocationCode].code,
+        value: code[params.originLocationCode].value,
+      });
+      setDestination({
+        code: code[params.destinationLocationCode].code,
+        value: code[params.destinationLocationCode].value,
+      });
+      setSchedule({
+        departureDate: params.departureDate,
+        departureFormattedDate: formatDate(new Date(params.departureDate))
+          .formattedDate,
+        returnDate: params.returnDate ? params.returnDate : "",
+        returnFormattedDate: params.returnDate
+          ? formatDate(new Date(params.returnDate)).formattedDate
+          : "",
+      });
+      setPassengers({
+        adults: Number(params.adults),
+        children: isNaN(Number(params.children)) ? 0 : Number(params.children),
+        infants: isNaN(Number(params.infants)) ? 0 : Number(params.children),
+      });
+      setCabin({
+        cabin: params.travelClass ? params.travelClass : "DEFAULT",
+        cabinKor: params.travelClass
+          ? convertToKor(params.travelClass)
+          : "모든 클래스",
       });
     }
   }, []);
@@ -212,12 +249,8 @@ const TicketSearchBox = ({
     }
 
     if (typeof window !== "undefined") {
-      window.location.href = `/ticket-result?originLocationCode=${origin.code}&destinationLocationCode=${destination.code}&departureDate=${schedule.departureDate}${tripType === "round" ? `&returnDate=${schedule.returnDate}` : ""}&adults=${passengers.adults}${passengers.children > 0 ? `&children=${passengers.children}` : ""}${passengers.infants > 0 ? `&infants=${passengers.infants}` : ""}${nonStop ? `&nonStop=${nonStop}` : ""}${cabin.cabin ? `&travelClass=${cabin.cabin}` : ""}&currencyCode=KRW`;
+      window.location.href = `/ticket-result?originLocationCode=${origin.code}&destinationLocationCode=${destination.code}&departureDate=${schedule.departureDate}${tripType === "round" ? `&returnDate=${schedule.returnDate}` : ""}&adults=${passengers.adults}${passengers.children > 0 ? `&children=${passengers.children}` : ""}${passengers.infants > 0 ? `&infants=${passengers.infants}` : ""}${nonStop ? `&nonStop=${nonStop}` : ""}${cabin.cabin !== "DEFAULT" ? `&travelClass=${cabin.cabin}` : ""}&currencyCode=KRW`;
     }
-
-    // router.push(
-    //   `/ticket-result?originLocationCode=${origin.code}&destinationLocationCode=${destination.code}&departureDate=${schedule.departureDate}${tripType === "round" ? `&returnDate=${schedule.returnDate}` : ""}&adults=${passengers.adults}${passengers.children > 0 ? `&children=${passengers.children}` : ""}${passengers.infants > 0 ? `&infants=${passengers.infants}` : ""}${nonStop ? `&nonStop=${nonStop}` : ""}${cabin.cabin && `&travelClass=${cabin.cabin}`}&currencyCode=KRW`,
-    // );
 
     if (handleChange) {
       handleChange();

@@ -46,6 +46,16 @@ interface DateProps {
   returnDate?: string;
 }
 
+export interface ICabin {
+  cabin: "ECONOMY" | "PREMIUM_ECONOMY" | "BUSINESS" | "FIRST" | "DEFAULT";
+  cabinKor:
+    | "일반석"
+    | "프리미엄 일반석"
+    | "비즈니스석"
+    | "일등석"
+    | "모든 클래스";
+}
+
 export interface SearchResultProps {
   tripType: string;
   nonStop: boolean;
@@ -68,10 +78,7 @@ export interface SearchResultProps {
     children: number;
     infants: number;
   };
-  cabin: {
-    cabin: string;
-    cabinKor: string;
-  };
+  cabin: ICabin;
 }
 
 const sessionStorage =
@@ -111,7 +118,7 @@ const { persistAtom: localPersistAtom } = recoilPersist({
   storage: localStorage,
 });
 
-export const defaultSearchResult = {
+export const defaultSearchResult: SearchResultProps = {
   tripType: "round",
   nonStop: false,
   origin: {
@@ -134,7 +141,7 @@ export const defaultSearchResult = {
     infants: 0,
   },
   cabin: {
-    cabin: "",
+    cabin: "DEFAULT",
     cabinKor: "모든 클래스",
   },
 };

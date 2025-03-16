@@ -1,4 +1,3 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
 import NextAuth, { CredentialsSignin, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import google from "next-auth/providers/google";
@@ -88,9 +87,9 @@ export const {
         case "kakao":
           console.log("OAuth 로그인", user);
 
-          // DB에서 id를 조회해서 있으면 로그인 처리를 없으면 자동 회원 가입 후 로그인 처리
           try {
             // 자동 회원 가입
+            // 이미 가입된 회원이면 회원가입이 되지 않고 에러를 응답하므로 무시하면 됨
             const newUser: OAuthUser = {
               type: "user",
               loginType: account.provider,
@@ -101,10 +100,7 @@ export const {
                 providerAccountId: account.providerAccountId,
               },
             };
-
-            // 이미 가입된 회원이면 회원가입이 되지 않고 에러를 응답하므로 무시하면 됨
             const result = await signupWithOAuth(newUser);
-            console.log("회원 가입", result);
 
             // 자동 로그인
             const loginRes = await loginOAuth(account.providerAccountId);
@@ -147,16 +143,9 @@ export const {
         token.accessTokenExpires = user.accessTokenExpires;
       }
 
-      // // JWT 자체의 만료 시간 추출
-      // const decodedToken = jwt.decode(token.accessToken) as JwtPayload | null;
-      // const accessTokenExpires = decodedToken?.exp
-      //   ? decodedToken!.exp * 1000
-      //   : 0; // 밀리초 단위로 변환
-
       // 토큰 만료 확인
       if (token.accessTokenExpires && Date.now() > token.accessTokenExpires) {
         try {
-          // console.log("토큰 만료됨.", Date.now() + " > " + accessTokenExpires);
           const res = await fetchAccessToken(token.refreshToken);
           if (res.ok) {
             const resJson: RefreshTokenRes = await res.json();
@@ -181,8 +170,6 @@ export const {
             };
           }
         }
-      } else {
-        // console.log(`토큰 ${accessTokenExpires - Date.now()} ms 남음`);
       }
 
       // 세션 없데이트
